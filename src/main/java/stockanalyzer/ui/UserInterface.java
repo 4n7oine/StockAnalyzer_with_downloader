@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import stockanalyzer.ctrl.Controller;
+import yahooApi.YahooFinanceException;
 
 public class UserInterface 
 {
@@ -13,32 +14,54 @@ public class UserInterface
 	private Controller ctrl = new Controller();
 
 	public void getDataFromCtrl1(){
-		ctrl.process("ABC");
+		try{
+			ctrl.process("APPL");
+		}catch(YahooFinanceException ex){
+			System.out.println(ex.getMessage());
+		}
 	}
 
 	public void getDataFromCtrl2(){
+		try{
+			ctrl.process("TWTR");
+		}catch(YahooFinanceException ex){
+			System.out.println(ex.getMessage());
+		}
 	}
 
 	public void getDataFromCtrl3(){
-
+		try{
+			ctrl.process("TSLA");
+		}catch(YahooFinanceException ex){
+			System.out.println(ex.getMessage());
+		}
 	}
 	public void getDataFromCtrl4(){
-
+		try{
+			ctrl.process("Error");
+		}catch(YahooFinanceException ex){
+			System.out.println(ex.getMessage());
+		}
 	}
 	
 	public void getDataForCustomInput() {
-		
+		System.out.println("Enter your Stockticker");
+		try{
+			ctrl.process(readLine());
+		}catch(YahooFinanceException ex){
+			System.out.println(ex.getMessage());
+		}
 	}
 
 
 	public void start() {
 		Menu<Runnable> menu = new Menu<>("User Interfacx");
 		menu.setTitel("Wählen Sie aus:");
-		menu.insert("a", "Choice 1", this::getDataFromCtrl1);
-		menu.insert("b", "Choice 2", this::getDataFromCtrl2);
-		menu.insert("c", "Choice 3", this::getDataFromCtrl3);
-		menu.insert("d", "Choice User Imput:",this::getDataForCustomInput);
-		menu.insert("z", "Choice User Imput:",this::getDataFromCtrl4);
+		menu.insert("a", "Apple", this::getDataFromCtrl1);
+		menu.insert("b", "Twitter", this::getDataFromCtrl2);
+		menu.insert("c", "Tesla", this::getDataFromCtrl3);
+		menu.insert("d", "Choice User Input:",this::getDataForCustomInput);
+		menu.insert("z", "Error demo:",this::getDataFromCtrl4);
 		menu.insert("q", "Quit", null);
 		Runnable choice;
 		while ((choice = menu.exec()) != null) {
