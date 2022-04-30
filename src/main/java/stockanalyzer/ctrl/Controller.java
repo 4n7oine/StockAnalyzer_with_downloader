@@ -1,8 +1,7 @@
 package stockanalyzer.ctrl;
-
+import stockanalyzer.ctrl.downloader.*;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 import yahooApi.YahooFinance;
 import yahooApi.YahooFinanceException;
@@ -12,16 +11,20 @@ import yahooApi.beans.YahooResponse;
 import yahoofinance.Stock;
 import yahoofinance.histquotes.Interval;
 
-import java.math.BigDecimal;
-import java.net.CookieHandler;
-import java.net.CookieManager;
+
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.io.IOException;
 import java.util.logging.LogManager;
-import java.util.stream.Collectors;
 
+//*********************************************
+//
+//https://github.com/4n7oine/StockAnalyzer-4n7oine
+//
+//*********************************************
 
 public class Controller {
 
@@ -67,8 +70,8 @@ public class Controller {
 						Stock stock = getData("TWTR");
 						stock.print();
 					} catch (YahooFinanceException e) {
-						System.out.println(e.getMessage());
-						throw new YahooFinanceException(" ++++  ++++  Error with the Twitter-Stock++++  ++++  ");
+						//System.out.println(e.getMessage());
+						throw new YahooFinanceException(e.getMessage());
 					}
 					break;
 				case "TSLA":
@@ -78,10 +81,52 @@ public class Controller {
 						stock.print();
 						//throw new YahooFinanceException("TEST ERROR in reguar run");
 					} catch (YahooFinanceException e) {
-						System.out.println(e.getMessage());
-						throw new YahooFinanceException(" ++++  ++++  Error with the Tesla-Stock++++  ++++  ");
+						//System.out.println(e.getMessage());
+						throw new YahooFinanceException(e.getMessage());
 					}
 					break;
+
+				case "SequentialDownloader":
+					try {
+						System.out.println("++++ SequentialDownloader Start +++++");
+						List <String> tickers = Arrays.asList("TSLA","TWTR", "APPL");
+						SequentialDownloader sequentialDownloader = new SequentialDownloader();
+						long start = System.currentTimeMillis();
+						String timeStamp = new SimpleDateFormat("HH:mm:ss").format(new Date());
+						System.out.println(timeStamp);
+						sequentialDownloader.process(tickers);
+						long end = System.currentTimeMillis();
+						System.out.println("Miliseconds:" + (end - start));
+						timeStamp = new SimpleDateFormat("HH:mm:ss").format(new Date());
+						System.out.println(timeStamp);
+						System.out.println("++++ SequentialDownloader Fertig ++++");
+						//throw new YahooFinanceException("TEST ERROR in reguar run");
+					}catch (Exception e){
+						//System.out.println(e.getMessage());
+						throw new YahooFinanceException(e.getMessage());
+					}
+					break;
+
+				case "ParallelDownloader":
+					try {
+						System.out.println("++++ ParallelDownloader Start +++++");
+						List <String> tickers = Arrays.asList("TSLA","TWTR", "APPL");
+						ParallelDownloader paralleldownloader = new ParallelDownloader();
+						long start = System.currentTimeMillis();
+						String timeStamp = new SimpleDateFormat("HH:mm:ss").format(new Date());
+						System.out.println(timeStamp);
+						paralleldownloader.process(tickers);
+						long end = System.currentTimeMillis();
+						System.out.println("Miliseconds:" + (end - start));
+						timeStamp = new SimpleDateFormat("HH:mm:ss").format(new Date());
+						System.out.println(timeStamp);
+						System.out.println("++++ ParallelDownloader Fertig ++++");
+					} catch (Exception e) {
+						//System.out.println(e.getMessage());
+						throw new YahooFinanceException(e.getMessage());
+					}
+					break;
+
 				case "Error":
 					throw new YahooFinanceException("DEMO ERROR MESSAGE FROM CONTROLLER");
 
@@ -91,8 +136,8 @@ public class Controller {
 						Stock stock = getData(ticker);
 						stock.print();
 					} catch (YahooFinanceException e) {
-						System.out.println(e.getMessage());
-						throw new YahooFinanceException(" ++++  ++++  Error with your Personal Stock++++  ++++  ");
+						//System.out.println(e.getMessage());
+						throw new YahooFinanceException(e.getMessage());
 					}
 					break;
 			}
@@ -185,16 +230,21 @@ public class Controller {
 					.count();
 		}catch(IOException e){
 			System.out.println(e.toString());
+			throw new YahooFinanceException(e.getMessage());
 		}
 
 		return size;
 	}
 
-	public Result getHighestPrice(List<Result> results)throws YahooFinanceException{
-		double highestPrice = results.stream()
+	public Result getHighestPrice(List<Result> results) throws YahooFinanceException{
+		try {
+			double highestPrice = results.stream()
 					.mapToDouble(h -> h.getAsk().doubleValue()).max().orElse(-1);
 
-			return results.stream().filter(result -> result.getAsk().doubleValue()==highestPrice).findAny()
+			return results.stream().filter(result -> result.getAsk().doubleValue() == highestPrice).findAny()
 					.orElse(null);
+		}catch (Exception e){
+			throw new YahooFinanceException(e.getMessage());
+		}
 	}
 }

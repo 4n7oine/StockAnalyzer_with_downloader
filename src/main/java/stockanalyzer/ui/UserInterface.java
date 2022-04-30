@@ -43,6 +43,25 @@ public class UserInterface
 			System.out.println(ex.getMessage());
 		}
 	}
+
+	public void SequentialDownloader(){
+		try{
+			ctrl.process("SequentialDownloader");
+		}catch(YahooFinanceException ex){
+			System.out.println(ex.getMessage());
+		}
+	}
+
+	public void ParallelDownloader(){
+		try{
+			ctrl.process("ParallelDownloader");
+		}catch(YahooFinanceException ex){
+			System.out.println(ex.getMessage());
+		}
+	}
+
+
+
 	
 	public void getDataForCustomInput() {
 		System.out.println("Enter your Stockticker");
@@ -62,6 +81,8 @@ public class UserInterface
 		menu.insert("c", "Tesla", this::getDataFromCtrl3);
 		menu.insert("d", "Choice User Input:",this::getDataForCustomInput);
 		menu.insert("z", "Error demo:",this::getDataFromCtrl4);
+		menu.insert("s", "SequentialDownloader",this::SequentialDownloader);
+		menu.insert("p", "ParallelDownloader",this::ParallelDownloader);
 		menu.insert("q", "Quit", null);
 		Runnable choice;
 		while ((choice = menu.exec()) != null) {
