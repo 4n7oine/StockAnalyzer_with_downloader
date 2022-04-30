@@ -18,7 +18,7 @@ public class YahooFinance {
 
     public static final String URL_YAHOO = "https://query1.finance.yahoo.com/v7/finance/quote?symbols=%s";
 
-    public String requestData(List<String> tickers) {
+    public String requestData(List<String> tickers) throws YahooFinanceException {
         //TODO improve Error Handling
         String symbols = String.join(",", tickers);
         String query = String.format(URL_YAHOO, symbols);
@@ -28,6 +28,7 @@ public class YahooFinance {
             obj = new URL(query);
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            throw new YahooFinanceException("Fehlerhafte URL");
         }
         HttpURLConnection con = null;
         StringBuilder response = new StringBuilder();
@@ -40,7 +41,8 @@ public class YahooFinance {
             }
             in.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            throw new YahooFinanceException("No Conncetion");
         }
         return response.toString();
     }
@@ -53,7 +55,7 @@ public class YahooFinance {
         return jo;
     }
 
-    public void fetchAssetName(Asset asset) {
+    public void fetchAssetName(Asset asset) throws YahooFinanceException {
         YahooFinance yahoo = new YahooFinance();
         List<String> symbols = new ArrayList<>();
         symbols.add(asset.getSymbol());
@@ -73,15 +75,16 @@ public class YahooFinance {
         return returnName;
     }
 
-    public YahooResponse getCurrentData(List<String> tickers) {
-        String jsonResponse = requestData(tickers);
-        ObjectMapper objectMapper = new ObjectMapper();
-        YahooResponse result = null;
-        try {
-             result  = objectMapper.readValue(jsonResponse, YahooResponse.class);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return result;
+    public YahooResponse getCurrentData(List<String> tickers) throws YahooFinanceException {
+            String jsonResponse = requestData(tickers);
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            YahooResponse result = null;
+            try {
+                result = objectMapper.readValue(jsonResponse, YahooResponse.class);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+            return result;
     }
 }

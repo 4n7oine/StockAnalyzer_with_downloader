@@ -41,8 +41,8 @@ public class Controller {
 				case "APPL":
 					System.out.println("Apple");
 					//Alte Methode vom Lektor
-					//System.out.println(getResultData("AAPL").getAsk());
 					try {
+						System.out.println(getResultData("AAPL").getAsk());
 						//Methode mit YahooAPI
 						Stock stock = getData("AAPL");
 						stock.print();
@@ -56,7 +56,8 @@ public class Controller {
 						System.out.println(getAverageOfStock52WeeksDailyFromNow(stock));
 						//stock.getHistory();
 					} catch (YahooFinanceException e) {
-						System.out.println(e.getMessage());
+						//System.out.println(e.getMessage());
+						throw new YahooFinanceException(e.getMessage());
 					}
 
 					break;
