@@ -89,7 +89,7 @@ public class Controller {
 				case "SequentialDownloader":
 					try {
 						System.out.println("++++ SequentialDownloader Start +++++");
-						List <String> tickers = Arrays.asList("TSLA","TWTR", "APPL");
+						List <String> tickers = Arrays.asList("TSLA","TWTR", "APPL","BMW.DE", "1COV.DE", "BAS.DE", "FRE.DE", "HEI.DE", "MTX.DE", "VOW3.DE", "DB1.DE", "HNR1.DE", "ADS.DE", "AIR.DE");
 						SequentialDownloader sequentialDownloader = new SequentialDownloader();
 						long start = System.currentTimeMillis();
 						String timeStamp = new SimpleDateFormat("HH:mm:ss").format(new Date());
@@ -110,7 +110,7 @@ public class Controller {
 				case "ParallelDownloader":
 					try {
 						System.out.println("++++ ParallelDownloader Start +++++");
-						List <String> tickers = Arrays.asList("TSLA","TWTR", "APPL");
+						List <String> tickers = Arrays.asList("TSLA","TWTR", "APPL","BMW.DE", "1COV.DE", "BAS.DE", "FRE.DE", "HEI.DE", "MTX.DE", "VOW3.DE", "DB1.DE", "HNR1.DE", "ADS.DE", "AIR.DE");
 						ParallelDownloader paralleldownloader = new ParallelDownloader();
 						long start = System.currentTimeMillis();
 						String timeStamp = new SimpleDateFormat("HH:mm:ss").format(new Date());
